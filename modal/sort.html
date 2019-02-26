@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst">
+        <label for="dstAsi">アジア</label>
+        <input type="radio" id="dstEur" value="EUR" v-model="checkedDst">
+        <label for="dstEur">ヨーロッパ</label>
+        <input type="radio" id="dstOce" value="OCE" v-model="checkedDst">
+        <label for="dstOce">オセアニア</label><br>
+        <span>Checked Dst: {{ checkedDst }}</span>
+        <ul>
+            <li v-for="(item, index) in matched" v-bind:key="item.id">
+                <!-- <a v-bind:href="'https://tour.his-j.com/ct/sp/search/02A_10/' + item[1] + '/' + item[3] + '/' + item[5] + '/'">国名： {{ item[2] }} 都市名： {{ item[4] }}</a> -->
+                <input type="radio" v-bind:id="'dst' + item[5]">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
+                <label v-bind:for="'dst' + item[5]">都市： {{ item[4] }}</label>
+            </li>
+        </ul>
+        <pre>{{ $data }}</pre>
+    </div>
+    <script>
+    new Vue({
+        el: '#app',
+        data: {
+            // dst: 'ASI',
+            checkedDst: '',
+            // あらかじめ空リストを用意しておく
+            list: []
+        },
+        created: function () {
+            axios.get('./data/map.csv').then(function (response) {
+                // 取得完了したらlistリストに代入
+                var tmpArray = response.data.split("\n");
+                var csvArray = [];
+                for (var i = 0; i < tmpArray.length; i++) {
+                    csvArray[i] = tmpArray[i].split(",");
+                }
+                this.list = csvArray
+            }.bind(this)).catch(function (e) {
+                console.error(e)
+            })
+        },
+        computed: {
+            matched: function () {
+                return this.list.filter(function(val) {
+                    // val[1]に方面コードが入る
+                    return val[1] === this.checkedDst;
+                }, this)
+            }
+        }
+    })
+    Vue.component('comp-child', {
+        template: '<p>{{val}}</p>',
+        props: ['val']
+    })
+    </script>
+
+    <body>
+
+</html>

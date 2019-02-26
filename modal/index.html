@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <ul>
+            <li v-for="(item, index) in list" v-bind:key="item.id">
+                方面名：{{ item[0] }} 方面コード：{{ item[1] }}
+                国名: {{ item[2] }}
+            </li>
+        </ul>
+        <pre>{{ $data }}</pre>
+    </div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            // あらかじめ空リストを用意しておく
+            list: []
+        },
+        created: function () {
+            axios.get('./data/map.csv').then(function (response) {
+                // 取得完了したらlistリストに代入
+                var tmpArray = response.data.split("\n");
+                var csvArray = [];
+                for (var i = 0; i < tmpArray.length; i++) {
+                    csvArray[i] = tmpArray[i].split(",");
+                }
+                this.list = csvArray
+            }.bind(this)).catch(function (e) {
+                console.error(e)
+            })
+        }
+    })
+</script>
+<body>
+</html>
