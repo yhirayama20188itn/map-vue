@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+</head>
+
+<ul>
+    <div id="app">
+        <div id="select-area__dst" v-if="showDstSelector">
+            <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst">
+            <label for="dstAsi">アジア</label>
+            <input type="radio" id="dstEur" value="EUR" v-model="checkedDst">
+            <label for="dstEur">ヨーロッパ</label>
+            <input type="radio" id="dstOce" value="OCE" v-model="checkedDst">
+            <label for="dstOce">オセアニア</label><br>
+            <span>Checked Dst: {{ checkedDst }}</span>
+        </div>
+        <ul v-if="showAllDst" id="map-on__dst">
+            <li v-for="(item, index) in list" v-bind:key="item.id">
+                <input type="radio" v-bind:id="'dst' + item[5]">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
+                <br><label v-bind:for="'dst' + item[5]">国： {{ item[2] }}</label>
+            </li>
+        </ul>
+        <ul v-if="showCountry" id="map-on__country">
+            <!-- dstがmatchしたcountryを呼び出す -->
+            <li v-for="(item, index) in matchedDst" v-bind:key="item.id">
+                <!-- checkedCountryに選択した国コードを渡す -->
+                <input type="radio" v-bind:id="'dst' + item[5]" v-bind:value="item[3]" v-model="checkedCountry">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
+                <br><label v-bind:for="'dst' + item[5]">国： {{ item[2] }}</label>
+            </li>
+        </ul>
+        <ul v-if="showCity" id="map-on__city">
+            <!-- countryがmatchしたcityを呼び出す -->
+            <li v-for="(item, index) in matchedCountry" v-bind:key="item.id">
+                <a v-bind:href="'https://tour.his-j.com/ct/sp/search/02A_10/' + item[1] + '/' + item[3] + '/' + item[5] + '/'">都市名： {{ item[4] }}</a>
+            </li>
+        </ul>
+        <button v-on:click="closeModal">閉じる</button>
+        <pre>{{ $data }}</pre>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                checkedDst: '',
+                checkedCountry: '',
+                showDstSelector: true,
+                showAllDst: true,
+                showCountry: false,
+                showCity: false,
+                list: [],
+                countryList: []
+            },
+            created: function () {
+                axios.get('./data/map.csv').then(function (response) {
+                    // 取得完了したらlistリストに代入
+                    var tmpArray = response.data.split("\n");
+                    var csvArray = [];
+                    for (var i = 0; i < tmpArray.length; i++) {
+                        csvArray[i] = tmpArray[i].split(",");
+                    }
+                    this.list = csvArray
+                }.bind(this)).catch(function (e) {
+                    console.error(e)
+                })
+                axios.get('./data/country.csv').then(function (response) {
+                    // 取得完了したらlistリストに代入
+                    var country_csv_Array = response.data.split("\r\n");
+                    var country_name_Array = [];
+                    for (var i = 0; i < country_csv_Array.length; i++) {
+                        country_name_Array[i] = country_csv_Array[i].split(",");
+                    }
+                    this.countryList = country_name_Array
+                }.bind(this)).catch(function (e) {
+                    console.error(e)
+                })
+            },
+            computed: {
+                matchedDst: function() {
+                    return this.countryList.filter(function (val) {
+                        // val[1]に方面コードが入る
+                        return val[1] === this.checkedDst;
+                    }, this)
+                },
+                matchedCountry: function() {
+                    return this.list.filter(function (val) {
+                        // val[3]に国コードが入る
+                        return val[3] === this.checkedCountry;
+                    }, this)
+                }
+            },
+            watch: {
+                checkedDst: function () {
+                    this.showDstSelector = false
+                    this.showAllDst = false
+                    this.showCountry = true
+                },
+                checkedCountry: function () {
+                    this.showCountry = false
+                    this.showCity = true
+                }
+            },
+            methods: {
+                closeModal: function () {
+                    // defaultの状態に戻したい
+                    this.showDstSelector = true
+                    this.checkedDst = '',
+                    this.checkedCountry = '',
+                    this.showAllDst = true
+                    this.showCountry = false
+                    this.showCity = false
+                }
+            }
+        })
+    </script>
+
+    <body>
+
+</html>
