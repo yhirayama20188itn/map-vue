@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <div class="box">
+        <h3>ここは親コンポーネントのスコープ</h3>
+        <p>{{ childData }}</p>
+        <child-box :parent-data="parentData" @send-child-data="getChildData"></child-box>
+    </div>
+</div>
+<script>
+    Vue.component('child-box', {
+        template: `<div class="box">
+            <h3>子コンポーネント</h3>
+            <p>{{ parentData }}</p>
+        </div>`,
+        props: ['parentData'],
+        data: function () {
+            return {
+                childData: '子コンポーネントのデータ'
+            }
+        },
+        created: function () {
+            this.$emit('send-child-data', this.childData);
+        }
+    });
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            parentData: '親コンポーネントのデータ',
+            childData: ''
+        },
+        methods: {
+            getChildData: function (text) {
+                this.childData = text;
+            }
+        }
+    });
+</script>
+
+<body>
+
+</html>

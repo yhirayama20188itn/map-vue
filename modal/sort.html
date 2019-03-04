@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
 </head>
 
-<body>
+<ul>
     <div id="app">
         <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst">
         <label for="dstAsi">アジア</label>
@@ -16,7 +16,14 @@
         <input type="radio" id="dstOce" value="OCE" v-model="checkedDst">
         <label for="dstOce">オセアニア</label><br>
         <span>Checked Dst: {{ checkedDst }}</span>
-        <ul>
+        <ul v-if="showAllDst">
+            <li v-for="(item, index) in list" v-bind:key="item.id">
+                <!-- <a v-bind:href="'https://tour.his-j.com/ct/sp/search/02A_10/' + item[1] + '/' + item[3] + '/' + item[5] + '/'">国名： {{ item[2] }} 都市名： {{ item[4] }}</a> -->
+                <input type="radio" v-bind:id="'dst' + item[5]">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
+                <label v-bind:for="'dst' + item[5]">都市： {{ item[4] }}</label>
+            </li>
+        </ul>
+        <ul v-else>
             <li v-for="(item, index) in matched" v-bind:key="item.id">
                 <!-- <a v-bind:href="'https://tour.his-j.com/ct/sp/search/02A_10/' + item[1] + '/' + item[3] + '/' + item[5] + '/'">国名： {{ item[2] }} 都市名： {{ item[4] }}</a> -->
                 <input type="radio" v-bind:id="'dst' + item[5]">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
@@ -32,7 +39,8 @@
             // dst: 'ASI',
             checkedDst: '',
             // あらかじめ空リストを用意しておく
-            list: []
+            list: [],
+            showAllDst: true
         },
         created: function () {
             axios.get('./data/map.csv').then(function (response) {
@@ -53,6 +61,11 @@
                     // val[1]に方面コードが入る
                     return val[1] === this.checkedDst;
                 }, this)
+            }
+        },
+        watch: {
+            checkedDst: function() {
+                this.showAllDst = false
             }
         }
     })

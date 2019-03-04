@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="box">
+            <h3>ここは親コンポーネントのスコープ</h3>
+            <p>{{ childData }}</p>
+            <child-box :parent-data="parentData" @send-child-data="getChildData"></child-box>
+        </div>
+        <pre>{{$data}}</pre>
+    </div>
+    <script>
+        Vue.component('child-box', {
+            template: `<div class="box">
+                            <h3>子コンポーネント</h3>
+                            <ul>
+                                <li v-for="(item, index) in childData" v-bind:key="item.id">
+                                    <input type="radio" v-bind:id="'dst' + item[5]">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
+                                    <label v-bind:for="'dst' + item[5]">都市： {{ item[4] }}</label>
+                                </li>
+                            </ul>
+                        </div>`,
+            props: ['parentData'],
+            data: function () {
+                return {
+                    parentData: '',
+                    childData: '子コンポーネントのデータ'
+                }
+            },
+            created: function () {
+                axios.get('./data/map.csv').then(function (response) {
+                    // 取得完了したらlistリストに代入
+                    var tmpArray = response.data.split("\n");
+                    var csvArray = [];
+                    for (var i = 0; i < tmpArray.length; i++) {
+                        csvArray[i] = tmpArray[i].split(",");
+                    }
+                    this.childData = csvArray
+                }.bind(this)).catch(function (e) {
+                    console.error(e)
+                })
+
+                this.$emit('send-child-data', this.childData);
+            }
+        });
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                parentData: '',
+                childData: ''
+            },
+            methods: {
+                getChildData: function (text) {
+                    this.childData = text;
+                }
+            }
+        });
+    </script>
+
+    <body>
+
+</html>

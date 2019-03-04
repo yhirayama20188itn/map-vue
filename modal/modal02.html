@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="./css/slot.css">
+</head>
+
+<ul>
+    <div id="app">
+        <div class="example-modal-window">
+            <p>ボタンを押すとモーダルウィンドウが開きます</p>
+            <button @click="openModal">開く</button>
+            <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst" @click="openModal">
+            <label for="dstAsi">アジア</label>
+            <input type="radio" id="dstEur" value="EUR" v-model="checkedDst" @click="openModal">
+            <label for="dstEur">ヨーロッパ</label>
+            <input type="radio" id="dstOce" value="OCE" v-model="checkedDst" @click="openModal">
+            <label for="dstOce">オセアニア</label><br>
+            <span>Checked Dst: {{ checkedDst }}</span>
+            <my-modal @close="closeModal" v-if="modal">
+                <!-- main スロットコンテンツ -->
+                <template slot="main">
+                    <ul v-if="showAllDst">
+                        <li v-for="(item, index) in list" v-bind:key="item.id">
+                            <input type="radio" v-bind:id="'dst' + item[5]">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
+                            <label v-bind:for="'dst' + item[5]">都市： {{ item[4] }}</label>
+                        </li>
+                    </ul>
+                    <ul v-else>
+                        <li v-for="(item, index) in matched" v-bind:key="item.id">
+                            <input type="radio" v-bind:id="'dst' + item[5]">国名： {{ item[2] }} 都市名： {{ item[4] }}</input>
+                            <label v-bind:for="'dst' + item[5]">都市： {{ item[4] }}</label>
+                        </li>
+                    </ul>
+                </template>
+                <!-- footer スロットコンテンツ -->
+                <template slot="footer">
+                    <!-- <button @click="close">閉じる</button> -->
+                </template>
+            </my-modal>
+        </div>
+        <pre>{{ $data }}</pre>
+    </div>
+    <script>
+        Vue.component('my-modal', {
+            template: `<transition name="modal" appear>
+                        <div class="modal modal-overlay" @click.self="$emit('close')">
+                            <div class="modal-window">
+                                <div class="modal-content">
+                                    <slot name="main">
+                                    </slot>
+                                </div>
+                                <footer class="modal-footer">
+                                    <slot name="footer">
+                                        <button @click="$emit('close')">Close</button>
+                                    </slot>
+                                </footer>
+                            </div>
+                        </div>
+                    </transition>
+            `
+        })
+        new Vue({
+            el: '#app',
+            data: {
+                modal: false,
+                checkedDst: '',
+                list: [],
+                showAllDst: true
+            },
+            created: function () {
+                axios.get('./data/map.csv').then(function (response) {
+                    // 取得完了したらlistリストに代入
+                    var tmpArray = response.data.split("\n");
+                    var csvArray = [];
+                    for (var i = 0; i < tmpArray.length; i++) {
+                        csvArray[i] = tmpArray[i].split(",");
+                    }
+                    this.list = csvArray
+                }.bind(this)).catch(function (e) {
+                    console.error(e)
+                })
+            },
+            computed: {
+                matched: function () {
+                    return this.list.filter(function (val) {
+                        // val[1]に方面コードが入る
+                        return val[1] === this.checkedDst;
+                    }, this)
+                }
+            },
+            watch: {
+                checkedDst: function () {
+                    this.showAllDst = false
+                }
+            },
+            methods: {
+                openModal: function () {
+                    this.modal = true
+                },
+                closeModal: function () {
+                    this.modal = false
+                }
+            }
+        })
+    </script>
+
+    <body>
+
+</html>

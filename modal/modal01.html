@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+    <style src="./css/modal01.css"></style>
+</head>
+
+<body>
+    <div id="app">
+        <modal v-if="showModal" @close="showModal = false"></modal>
+        <button class="button" @click="showModal = true">
+            Show Modal
+        </button>
+    </div>
+
+    <script type="text/x-template" id="modal">
+    <transition
+        name="fade"
+        @after-enter="showContent = true"
+    >
+        <div
+        class="modal"
+        @click="showContent = false"
+        >
+        <transition
+            name="fade"
+            @after-leave="$emit('close')"
+        >
+            <div
+            v-if="showContent"
+            class="content"
+            @click.stop
+            >
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam, placeat, unde! Architecto laboriosam ducimus atque cum dolore doloribus obcaecati vero. Minus porro sapiente unde fuga incidunt quidem necessitatibus mollitia libero?
+            </div>
+        </transition>
+        </div>
+    </transition>
+    </script>
+
+    <script>
+        Vue.component('modal', {
+            template: `#modal`,
+            data: function () {
+                return {
+                    showContent: false
+                }
+            }
+        });
+        var vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    showModal: false
+                }
+            }
+        });
+    </script>
+
+    <body>
+
+</html>
