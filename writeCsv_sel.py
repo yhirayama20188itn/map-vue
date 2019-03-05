@@ -16,8 +16,8 @@ import requests
 from bs4 import BeautifulSoup
 
 # 予めbk作成
-# today = datetime.date.today().strftime('%Y-%m-%d')
-# shutil.copyfile("./data/map.csv", "./bk/" + today + ".csv")
+today = datetime.date.today().strftime('%Y-%m-%d')
+shutil.copyfile("./modal/data/map.csv", "./bk/" + today + ".csv")
 
 listA = []
 listB = []
@@ -41,8 +41,8 @@ options.add_argument('--headless')
 driver = webdriver.Chrome(chrome_options=options)
 
 for i, (a, b, c) in enumerate(zip(listA, listB, listC)):
-    # driver.get('https://tour.his-j.com/ct/sp/search/02A_10/' + a + '/' + b)
-    driver.get('https://tour.his-j.com/ct/search/02A_10/' + a + '/' + b + '/' + c)
+    driver.get('https://tour.his-j.com/ct/sp/search/02A_10/' + a + '/' + b)
+#     driver.get('https://tour.his-j.com/ct/search/02A_10/' + a + '/' + b + '/' + c)
 
     time.sleep(5)
 
@@ -50,10 +50,10 @@ for i, (a, b, c) in enumerate(zip(listA, listB, listC)):
     bs4Obj = BeautifulSoup(html, "lxml")
 
     result_num = bs4Obj.select_one(".result-number").string
-    result_num = int(result_num.replace(',', ''))
+#     result_num = int(result_num.replace(',', ''))
     print(result_num)
 
-    if result_num == 5159:
+    if result_num == 0:
         print(i)
         print('true')
         df = df.drop(i, axis=0)

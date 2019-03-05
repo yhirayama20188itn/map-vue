@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+    <script type="text/javascript" src="./js/ua.js"></script>
+    <link rel="stylesheet" href="./css/slot.css">
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<div id="app">
+    <div class="example-modal-window">
+        <div id="select-area__dst">
+            <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst" @click="openModal">
+            <div class="select-area__dst--asi"><label for="dstAsi">アジア</label></div>
+
+            <input type="radio" id="dstAsb" value="ASB" v-model="checkedDst" @click="openModal">
+            <div class="select-area__dst--asb"><label for="dstAsb">アジアビーチ</label></div>
+
+            <input type="radio" id="dstHwi" value="HWI" v-model="checkedDst" @click="openModal">
+            <div class="select-area__dst--hwi"><label for="dstHwi">ハワイ</label></div>
+
+            <input type="radio" id="dstEur" value="EUR" v-model="checkedDst" @click="openModal">
+            <div class="select-area__dst--eur"><label for="dstEur">ヨーロッパ</label></div>
+
+            <input type="radio" id="dstOce" value="OCE" v-model="checkedDst" @click="openModal">
+            <div class="select-area__dst--oce"><label for="dstOce">オセアニア</label></div>
+        </div>
+        <my-modal @close="closeModal" v-if="modal">
+            <template slot="main">
+                <ul v-if="showAllDst" id="map-on__dst">
+                    <li v-for="(item, index) in list" v-bind:key="item.id">
+                        <input type="radio" v-bind:id="'dst' + item[5]"></input>
+                        <label v-bind:for="'dst' + item[5]">国： {{ item[2] }}</label>
+                    </li>
+                </ul>
+                <ul v-if="showCountry" id="map-on__country">
+                    <!-- dstがmatchしたcountryを呼び出す -->
+                    <li v-for="(item, index) in matchedDst" v-bind:key="item.id">
+                        <!-- checkedCountryに選択した[マップコード + 国コード]を渡す -->
+                        <input type="radio" v-bind:id="'dst' + item[3]" v-bind:value="item[1] + '-' + item[3]" v-model="checkedCountry"></input>
+                        <label v-bind:for="'dst' + item[3]">{{ item[2] }}</label>
+                    </li>
+                </ul>
+                <ul id="map-on__city">
+                    <!-- checkedCountryがmatchしたcityを呼び出す -->
+                    <li v-for="(item, index) in matchedCountry" v-bind:key="item.id">
+                        <a v-bind:href="url + item[1] + '/' + item[3] + '/' + item[5] + '/'">{{ item[4] }}</a>
+                    </li>
+                </ul>
+            </template>
+            <!-- footer スロットコンテンツ -->
+            <template slot="footer">
+            </template>
+        </my-modal>
+        <pre>{{ $data }}</pre>
+    </div>
+</div>
+<script>
+    Vue.component('my-modal', {
+        template: `<transition name="modal" appear>
+                        <div class="modal modal-overlay" @click.self="$emit('close')">
+                            <div class="modal-window">
+                                <div class="modal-content">
+                                    <slot name="main">
+                                    </slot>
+                                </div>
+                                <footer class="modal-footer">
+                                    <slot name="footer">
+                                        <button @click="$emit('close')">Close</button>
+                                    </slot>
+                                </footer>
+                            </div>
+                        </div>
+                    </transition>
+            `
+    })
+    new Vue({
+        el: '#app',
+        data: {
+            modal: false,
+            checkedDst: '',
+            checkedCountry: '',
+            showDstSelector: true,
+            showAllDst: true,
+            showCountry: false,
+            list: [],
+            countryList: [],
+            url: ''
+        },
+        created: function () {
+            axios.get('./data/map.csv').then(function (response) {
+                var tmpArray = response.data.split("\n");
+                var csvArray = [];
+                for (var i = 0; i < tmpArray.length; i++) {
+                    csvArray[i] = tmpArray[i].split(",");
+                }
+                this.list = csvArray
+            }.bind(this)).catch(function (e) {
+                console.error(e)
+            })
+            axios.get('./data/country.csv').then(function (response) {
+                var country_csv_Array = response.data.split("\r\n");
+                var country_name_Array = [];
+                for (var i = 0; i < country_csv_Array.length; i++) {
+                    country_name_Array[i] = country_csv_Array[i].split(",");
+                }
+                this.countryList = country_name_Array
+            }.bind(this)).catch(function (e) {
+                console.error(e)
+            })
+
+            if(_uac.isMobile) {
+                this.url = 'https://tour.his-j.com/ct/sp/search/02A_10/'
+            } else {
+                this.url = 'https://tour.his-j.com/ct/search/02A_10/'
+            }
+        },
+        computed: {
+            matchedDst: function () {
+                return this.countryList.filter(function (val) {
+                    // val[1]にマップコード
+                    return val[1] === this.checkedDst;
+                }, this)
+            },
+            matchedCountry: function () {
+                return this.list.filter(function (val) {
+                    // val[6]マップコード + val[3]国コードの組み合わせ
+                    return val[6] + '-' + val[3] === this.checkedCountry;
+                }, this)
+            }
+        },
+        watch: {
+            checkedDst: function () {
+                this.showDstSelector = false
+                this.showAllDst = false
+                this.showCountry = true
+            },
+            checkedCountry: function () {
+                this.showCountry = false
+                this.showCity = true
+            }
+        },
+        methods: {
+            openModal: function () {
+                this.modal = true
+            },
+            closeModal: function () {
+                this.modal = false
+                // defaultの状態に戻す
+                this.checkedDst = '',
+                this.checkedCountry = '',
+                this.showAllDst = true
+                this.showCountry = false
+            }
+        }
+    })
+</script>
+
+<body>
+
+</html>

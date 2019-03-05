@@ -9,8 +9,8 @@ df = pd.read_csv('./data/map.csv', sep=',', encoding="utf-8")
 
 
 # 予めbk作成
-# today = datetime.date.today().strftime('%Y-%m-%d')
-# shutil.copyfile("./data/map.csv", "./bk/" + today + ".csv")
+today = datetime.date.today().strftime('%Y-%m-%d')
+shutil.copyfile("./modal/data/map.csv", "./bk/" + today + ".csv")
 
 listA = []
 listB = []
