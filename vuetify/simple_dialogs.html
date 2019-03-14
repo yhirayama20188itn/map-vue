@@ -14,6 +14,52 @@
     <!-- axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
     <style>
+        .bg-map {
+          position: relative;
+        }
+        .menu, .dst-list, .v-input__control, .v-input__slot {
+          width: 600px !important;
+          height: 500px !important;
+        }
+        .dst-list__radio {
+          position: absolute;
+          justify-content: center;
+        }
+        .dst-list__radio-asi {
+          top: 42%;
+          right: 48%;
+          width: 50px;
+        }
+        .dst-list__radio-asb {
+          top: 50%;
+          right: 48%;
+          width: 80px;
+        }
+        .dst-list__radio-oce {
+          top: 60%;
+          right: 40%;
+          width: 120px;
+        }
+        .dst-list__radio-eur {
+          top: 37%;
+          right: 71%;
+          width: 80px;
+        }
+        .dst-list__radio-sam {
+          top: 60%;
+          right: 10%;
+          width: 120px;
+        }
+        .dst-list label {
+          font-size: 11px;
+        }
+        .v-radio {
+          border-radius: 3px;
+          background:rgba(255,255,255,0.8);
+        }
+        .v-input--selection-controls__input {
+          display: none;
+        }
         .dst-list__input, .country-list {
             display: none;
         }
@@ -53,38 +99,38 @@
         <v-app id="inspire" @click="closeModal()">
             <div class="bg-map">
                 <v-layout row justify-center>
-                    <div>
-                        <v-btn color="primary" dark @click="dialog = true">Open Dialog 1</v-btn>
+                    <div class="menu">
+                        <!-- <v-btn color="primary" dark @click="dialog = true">Open Dialog 1</v-btn>
                         <v-btn color="primary" dark @click="dialog2 = true" class="dst-list">
                             <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst" class="dst-list__input">
                             <label for="dstAsi" class="dst-list__label" @click="dialog2 = true">アジア</label>
-                        </v-btn>
+                        </v-btn> -->
                         <!-- <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst" class="dst-list__input">
                         <label for="dstAsi" class="dst-list__label">
                             <v-btn color="primary" dark @click="dialog2 = true" class="dst-list" for="dstAsi" @click="dialog2 = true">アジア</v-btn>
                         </label> -->
 
-                        <v-btn color="primary" dark @click="dialog2 = true" class="dst-list">
+                        <!-- <v-btn color="primary" dark @click="dialog2 = true" class="dst-list">
                             <input type="radio" id="dstAsb" value="ASB" v-model="checkedDst" class="dst-list__input">
                             <label for="dstAsb" class="dst-list__label" @click="dialog2 = true">アジアビーチ</label>
-                        </v-btn>
+                        </v-btn> -->
 
-                        <v-radio-group v-model="checkedDst" @click="dialog2 = true">
-                            <v-radio label="アジア" value="ASI" class="body-2"></v-radio>
-                            <v-radio label="アジアビーチ" value="ASB"></v-radio>
-                            <v-radio label="ハワイ" value="HWI"></v-radio>
-                            <v-radio label="グアム・サイパン" value="GAS"></v-radio>
-                            <v-radio label="ヨーロッパ" value="EUR"></v-radio>
-                            <v-radio label="南太平洋・オセアニア" value="OCE"></v-radio>
-                            <v-radio label="アフリカ" value="AFR"></v-radio>
-                            <v-radio label="アメリカ" value="USA"></v-radio>
-                            <v-radio label="中南米・カリブ海" value="SAM"></v-radio>
+                        <v-radio-group v-model="checkedDst" @click="dialog2 = true" class="dst-list">
+                            <v-radio label="アジア" value="ASI" class="dst-list__radio dst-list__radio-asi text-center"></v-radio>
+                            <v-radio label="アジアビーチ" value="ASB" class="dst-list__radio dst-list__radio-asb"></v-radio>
+                            <v-radio label="ハワイ" value="HWI" class="dst-list__radio dst-list__radio-hwi"></v-radio>
+                            <v-radio label="グアム・サイパン" value="GAS" class="dst-list__radio dst-list__radio-gas"></v-radio>
+                            <v-radio label="ヨーロッパ" value="EUR" class="dst-list__radio dst-list__radio-eur"></v-radio>
+                            <v-radio label="南太平洋・オセアニア" value="OCE" class="dst-list__radio dst-list__radio-oce"></v-radio>
+                            <v-radio label="アフリカ" value="AFR" class=""></v-radio>
+                            <v-radio label="アメリカ" value="USA" class=""></v-radio>
+                            <v-radio label="中南米・カリブ海" value="SAM" class="dst-list__radio dst-list__radio-sam"></v-radio>
                         </v-radio-group>
-                        <v-btn color="primary" dark @click="dialog3 = true">Open {{ checkedDst }}</v-btn>
+                        <!-- <v-btn color="primary" dark @click="dialog3 = true">Open {{ checkedDst }}</v-btn> -->
 
                     </div>
 
-                    <v-menu bottom offset-y>
+                    <!-- <v-menu bottom offset-y>
                         <template v-slot:activator="{ on }">
                             <v-btn v-on="on">A Menu</v-btn>
                         </template>
@@ -93,7 +139,7 @@
                                 <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                             </v-list-tile>
                         </v-list>
-                    </v-menu>
+                    </v-menu> -->
                     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" scrollable>
                         <v-card tile>
                             <v-toolbar card dark color="primary">
@@ -190,21 +236,15 @@
                             <v-list>
                                 <v-list-tile v-for="(item, index) in matchedDst" :key="item.id" @click="">
                                     <input type="radio" v-bind:id="'dst' + item[3]" v-bind:value="item[1] + '-' + item[3]" v-model="checkedCountry" class="country-list" @click="dialog3 = !dialog3"></input>
-                                    <!-- <v-list-tile-title><label v-bind:for="'dst' + item[3]" class="country-list__label" @click="dialog3 = !dialog3">{{ item[2] }}</label></v-list-tile-title> -->
                                     <v-list-tile-title><label v-bind:for="'dst' + item[3]" class="country-list__label">{{ item[2] }}</label></v-list-tile-title>
                                 </v-list-tile>
                             </v-list>
-                            <!-- <v-card-text>
-                                <v-btn color="primary" dark @click="dialog3 = !dialog3">Open Dialog 3</v-btn>
-                                <v-select :items="select" label="A Select List" item-value="text"></v-select>
-                            </v-card-text> -->
                             <v-card-actions>
                                 <v-btn color="primary" flat @click="dialog2=false">Close</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
                     <v-dialog v-model="dialog3" max-width="500px">
-                    <!-- <v-dialog v-if="showCity" max-width="500px"> -->
                         <v-card>
                             <v-card-title class="title grey lighten-2 font-weight-bold" primary-title>
                             都市を選択
