@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script src="https://rawgit.com/t-kajihara/myVuejs/master/component/VBtnSelect/VBtnSelect.js"></script>
+    <script src="VBtnSelect.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <v-app id="inspire">
+            <v-card>
+                <v-card-text>
+                    <v-container fluid>
+                        <v-layout row wrap>
+                            <v-flex xs12 sm3>
+                                <v-checkbox v-model="x" label="Left" value="left"></v-checkbox>
+                            </v-flex>
+    
+                            <v-flex xs6 sm3>
+                                <v-checkbox v-model="x" label="Right" value="right"></v-checkbox>
+                            </v-flex>
+    
+                            <v-flex xs6 sm3>
+                                <v-checkbox v-model="y" label="Top" value="top"></v-checkbox>
+                            </v-flex>
+    
+                            <v-flex xs6 sm3>
+                                <v-checkbox v-model="y" label="Bottom" value="bottom"></v-checkbox>
+                            </v-flex>
+    
+                            <v-flex xs12 sm3>
+                                <v-checkbox v-model="mode" label="Multi-line (mobile)" value="multi-line"></v-checkbox>
+                            </v-flex>
+    
+                            <v-flex xs12 sm3>
+                                <v-checkbox v-model="mode" label="Vertical (mobile)" value="vertical"></v-checkbox>
+                            </v-flex>
+    
+                            <v-flex xs12 sm4 offset-sm4>
+                                <v-text-field v-model="text" label="Text" type="text"></v-text-field>
+                            </v-flex>
+    
+                            <v-flex xs12 sm4>
+                                <v-text-field v-model.number="timeout" label="Timeout" type="number"></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm4>
+                                    <v-radio-group v-model="radioGroup">
+                                        <v-radio v-for="n in 3" :key="n" :label="`Radio ${n}`" :value="n"></v-radio>
+                                    </v-radio-group>
+                            </v-flex>
+                        </v-layout>
+    
+                    </v-container>
+                    <v-btn block color="primary" dark @click="snackbar = true">
+                        Show Snackbar
+                    </v-btn>
+                </v-card-text>
+    
+                <v-snackbar v-model="snackbar" :bottom="y === 'bottom'" :left="x === 'left'"
+                    :multi-line="mode === 'multi-line'" :right="x === 'right'" :timeout="timeout" :top="y === 'top'"
+                    :vertical="mode === 'vertical'">
+                    {{ text }}
+                    <v-btn color="pink" flat @click="snackbar = false">
+                        Close
+                    </v-btn>
+                </v-snackbar>
+                <div>{{$data}}</div>
+            </v-card>
+        </v-app>
+    </div>
+</body>
+<script>
+    new Vue({
+            el: '#app',
+            data() {
+                return {
+                    snackbar: false,
+                    y: 'top',
+                    x: null,
+                    mode: '',
+                    timeout: 6000,
+                    text: 'Hello, I\'m a snackbar'
+                }
+            }
+        })
+</script>
+
+</html>

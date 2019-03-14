@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script src="https://rawgit.com/t-kajihara/myVuejs/master/component/VBtnSelect/VBtnSelect.js"></script>
+    <script src="VBtnSelect.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-polyfill/dist/polyfill.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <v-app id="inspire">
+            <v-container fluid px-0>
+                <v-checkbox v-model="checkbox" :label="`Checkbox 1: ${checkbox.toString()}`"></v-checkbox>
+                <v-radio-group v-model="radioGroup">
+                    <v-radio v-for="n in 3" :key="n" :label="`Radio ${n}`" :value="n"></v-radio>
+                </v-radio-group>
+                <v-switch v-model="switch1" :label="`Switch 1: ${switch1.toString()}`"></v-switch>
+            </v-container>
+        </v-app>
+    </div>
+</body>
+<script>
+    var vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    checkbox: true,
+                    radioGroup: 1,
+                    switch1: true
+                }
+            }
+        });
+</script>
+</html>

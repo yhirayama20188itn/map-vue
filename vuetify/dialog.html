@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Vuetify -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script src="https://rawgit.com/t-kajihara/myVuejs/master/component/VBtnSelect/VBtnSelect.js"></script>
+    <script src="VBtnSelect.js"></script>
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+    <style>
+        #dstAsi{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <v-app id="inspire">
+            <div class="text-xs-center">
+                <v-dialog v-model="dialog" width="500">
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="red lighten-2" dark v-on="on">
+                            <input type="radio" id="dstAsi" value="ASI" v-model="checkedDst">
+                            <label for="dstAsi">アジア</label>
+                        </v-btn>
+                        <v-btn color="red lighten-2" dark v-on="on">
+                            Click Me
+                        </v-btn>
+                        <v-btn color="red lighten-2" dark v-on="on">
+                            Click Me
+                        </v-btn>
+                        <v-btn color="red lighten-2" dark v-on="on">
+                            Click Me
+                        </v-btn>
+                        <div>Checked Dst: {{ checkedDst }}</div>
+                        <pre>{{ $data }}</pre>
+                    </template>
+    
+                    <v-card>
+                        <v-card-title class="headline grey lighten-2" primary-title>
+                            Privacy Policy
+                        </v-card-title>
+
+                        <v-card-text>
+                            <v-radio-group v-model="radioGroup">
+                                <v-radio v-for="n in 3" :key="n" :label="`Radio ${n}`" :value="n"></v-radio>
+                                <v-radio v-for="(item, index) in list" :key="item.id" :label="`国名： ${ item[2] } 都市名： ${ item[4] }`" :value="item[3]"></v-radio>
+                            </v-radio-group>
+                            <v-radio-group v-model="radioGroup">
+                                <div v-if="showCountry" id="map-on__country">
+                                    <!-- dstがmatchしたcountryを呼び出す -->
+                                    <v-radio v-for="(item, index) in matchedDst" v-bind:key="item.id" :label="`国名： ${ item[2] }`">
+                                        <!-- checkedCountryに選択した国コードを渡す -->
+                                        <!-- <input type="radio" v-bind:id="'dst' + item[5]" v-bind:value="item[3]" v-model="checkedCountry"></input>
+                                        <label v-bind:for="'dst' + item[5]"></label> -->
+                                    </v-radio>
+                                </div>
+                            </v-radio-group>
+                            <!-- <v-radio-group v-model="radioGroup">
+                                <v-list>
+                                    <v-list-tile v-for="(item, index) in matchedDst" :key="i" @click="" v-bind:key="item.id" v-bind:value="item[3]"
+                                        v-model="checkedCountry">
+                                        <v-list-tile-title>{{ item[2] }}</v-list-tile-title>
+                                        <input type="radio" v-bind:id="'dst' + item[5]" v-bind:value="item[3]" v-model="checkedCountry"></input>
+                                        <label v-bind:for="'dst' + item[5]"></label>
+                                    </v-list-tile>
+                                </v-list>
+                            </v-radio-group> -->
+                        </v-card-text>
+    
+                        <v-divider></v-divider>
+    
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" flat @click="dialog = false">
+                                CLOSE
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </div>
+        </v-app>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    checkedDst: '',
+                    checkedCountry: '',
+                    showCountry: false,
+                    list: [],
+                    // Vuetify
+                    dialog: false,
+                    radioGroup: 1,
+                }
+            },
+            created: function () {
+                axios.get('../modal/data/map.csv').then(function (response) {
+                    // 取得完了したらlistリストに代入
+                    var tmpArray = response.data.split("\n");
+                    var csvArray = [];
+                    for (var i = 0; i < tmpArray.length; i++) {
+                        csvArray[i] = tmpArray[i].split(",");
+                    }
+                    this.list = csvArray
+                }.bind(this)).catch(function (e) {
+                    console.error(e)
+                })
+                axios.get('../modal/data/country.csv').then(function (response) {
+                    // 取得完了したらlistリストに代入
+                    var country_csv_Array = response.data.split("\r\n");
+                    var country_name_Array = [];
+                    for (var i = 0; i < country_csv_Array.length; i++) {
+                        country_name_Array[i] = country_csv_Array[i].split(",");
+                    }
+                    this.countryList = country_name_Array
+                }.bind(this)).catch(function (e) {
+                    console.error(e)
+                })
+            },
+            computed: {
+                matchedDst: function () {
+                    return this.countryList.filter(function (val) {
+                        // val[1]に方面コードが入る
+                        return val[1] === this.checkedDst;
+                    }, this)
+                },
+                matchedCountry: function () {
+                    return this.list.filter(function (val) {
+                        // val[3]に国コードが入る
+                        return val[3] === this.checkedCountry;
+                    }, this)
+                }
+            },
+            watch: {
+                checkedDst: function () {
+                    this.showAllDst = false
+                    this.showCountry = true
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
