@@ -45,10 +45,30 @@
           right: 71%;
           width: 80px;
         }
+        .dst-list__radio-afr {
+          top: 50%;
+          right: 71%;
+          width: 80px;
+        }
+        .dst-list__radio-usa {
+          top: 40%;
+          right: 13%;
+          width: 80px;
+        }
         .dst-list__radio-sam {
           top: 60%;
           right: 10%;
           width: 120px;
+        }
+        .dst-list__radio-hwi {
+          top: 44%;
+          right: 29%;
+          width: 50px;
+        }
+        .dst-list__radio-gas {
+          top: 55%;
+          right: 31%;
+          width: 100px;
         }
         .dst-list label {
           font-size: 11px;
@@ -107,99 +127,11 @@
                             <v-radio label="グアム・サイパン" value="GAS" class="dst-list__radio dst-list__radio-gas"></v-radio>
                             <v-radio label="ヨーロッパ" value="EUR" class="dst-list__radio dst-list__radio-eur"></v-radio>
                             <v-radio label="南太平洋・オセアニア" value="OCE" class="dst-list__radio dst-list__radio-oce"></v-radio>
-                            <v-radio label="アフリカ" value="AFR" class=""></v-radio>
-                            <v-radio label="アメリカ" value="USA" class=""></v-radio>
+                            <v-radio label="アフリカ" value="AFR" class="dst-list__radio dst-list__radio-afr"></v-radio>
+                            <v-radio label="アメリカ" value="USA" class="dst-list__radio dst-list__radio-usa"></v-radio>
                             <v-radio label="中南米・カリブ海" value="SAM" class="dst-list__radio dst-list__radio-sam"></v-radio>
                         </v-radio-group>
                     </div>
-                    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" scrollable>
-                        <v-card tile>
-                            <v-toolbar card dark color="primary">
-                                <v-btn icon dark @click="dialog = false; closeModal">
-                                    <v-icon>close</v-icon>
-                                </v-btn>
-                                <v-toolbar-title>Settings</v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-toolbar-items>
-                                    <v-btn dark flat @click="dialog = false">Save</v-btn>
-                                </v-toolbar-items>
-                                <v-menu bottom right offset-y>
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn dark icon v-on="on">
-                                            <v-icon>more_vert</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <v-list>
-                                        <v-list-tile v-for="(item, i) in items" :key="i" @click="">
-                                            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                                        </v-list-tile>
-                                    </v-list>
-                                </v-menu>
-                            </v-toolbar>
-                            <v-card-text>
-                                <v-btn color="primary" dark @click="dialog2 = !dialog2">Open Dialog 2</v-btn>
-                                <v-tooltip right>
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn v-on="on">Tool Tip Activator</v-btn>
-                                    </template>
-                                    Tool Tip
-                                </v-tooltip>
-                                <v-list three-line subheader>
-                                    <v-subheader>User Controls</v-subheader>
-                                    <v-list-tile avatar>
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>Content filtering</v-list-tile-title>
-                                            <v-list-tile-sub-title>Set the content filtering level to restrict apps that can
-                                                be downloaded</v-list-tile-sub-title>
-                                        </v-list-tile-content>
-                                    </v-list-tile>
-                                    <v-list-tile avatar>
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>Password</v-list-tile-title>
-                                            <v-list-tile-sub-title>Require password for purchase or use password to restrict
-                                                purchase</v-list-tile-sub-title>
-                                        </v-list-tile-content>
-                                    </v-list-tile>
-                                </v-list>
-                                <v-divider></v-divider>
-                                <v-list three-line subheader>
-                                    <v-subheader>General</v-subheader>
-                                    <v-list-tile avatar>
-                                        <v-list-tile-action>
-                                            <v-checkbox v-model="notifications"></v-checkbox>
-                                        </v-list-tile-action>
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>Notifications</v-list-tile-title>
-                                            <v-list-tile-sub-title>Notify me about updates to apps or games that I
-                                                downloaded</v-list-tile-sub-title>
-                                        </v-list-tile-content>
-                                    </v-list-tile>
-                                    <v-list-tile avatar>
-                                        <v-list-tile-action>
-                                            <v-checkbox v-model="sound"></v-checkbox>
-                                        </v-list-tile-action>
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>Sound</v-list-tile-title>
-                                            <v-list-tile-sub-title>Auto-update apps at any time. Data charges may apply
-                                            </v-list-tile-sub-title>
-                                        </v-list-tile-content>
-                                    </v-list-tile>
-                                    <v-list-tile avatar>
-                                        <v-list-tile-action>
-                                            <v-checkbox v-model="widgets"></v-checkbox>
-                                        </v-list-tile-action>
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>Auto-add widgets</v-list-tile-title>
-                                            <v-list-tile-sub-title>Automatically add home screen widgets
-                                            </v-list-tile-sub-title>
-                                        </v-list-tile-content>
-                                    </v-list-tile>
-                                </v-list>
-                            </v-card-text>
-
-                            <div style="flex: 1 1 auto;"></div>
-                        </v-card>
-                    </v-dialog>
                     <v-dialog v-model="dialog2" max-width="500px">
                         <v-card>
                             <v-card-title class="title grey lighten-2 font-weight-bold" primary-title>
@@ -251,32 +183,6 @@
                         dialog3: false,
                         showCountry: false,
                         showCity: false,
-                        notifications: false,
-                        sound: true,
-                        widgets: false,
-                        items: [
-                            {
-                                title: 'Click Me'
-                            },
-                            {
-                                title: 'Click Me'
-                            },
-                            {
-                                title: 'Click Me'
-                            },
-                            {
-                                title: 'Click Me 2'
-                            }
-                        ],
-                        select: [
-                            { text: 'State 1' },
-                            { text: 'State 2' },
-                            { text: 'State 3' },
-                            { text: 'State 4' },
-                            { text: 'State 5' },
-                            { text: 'State 6' },
-                            { text: 'State 7' }
-                        ],
                         // data
                         list: [],
                         countryList: [],
@@ -351,64 +257,6 @@
                     }
                 }
             })
-        // new Vue({
-        //     el: '#app',
-        //     data() {
-        //         return {
-        //             checkedDst: '',
-        //             checkedCountry: '',
-        //             showCountry: false,
-        //             list: [],
-        //             // Vuetify
-        //             dialog: false,
-        //             radioGroup: 1,
-        //         }
-        //     },
-        //     created: function () {
-        //         axios.get('../modal/data/map.csv').then(function (response) {
-        //             // 取得完了したらlistリストに代入
-        //             var tmpArray = response.data.split("\n");
-        //             var csvArray = [];
-        //             for (var i = 0; i < tmpArray.length; i++) {
-        //                 csvArray[i] = tmpArray[i].split(",");
-        //             }
-        //             this.list = csvArray
-        //         }.bind(this)).catch(function (e) {
-        //             console.error(e)
-        //         })
-        //         axios.get('../modal/data/country.csv').then(function (response) {
-        //             // 取得完了したらlistリストに代入
-        //             var country_csv_Array = response.data.split("\r\n");
-        //             var country_name_Array = [];
-        //             for (var i = 0; i < country_csv_Array.length; i++) {
-        //                 country_name_Array[i] = country_csv_Array[i].split(",");
-        //             }
-        //             this.countryList = country_name_Array
-        //         }.bind(this)).catch(function (e) {
-        //             console.error(e)
-        //         })
-        //     },
-        //     computed: {
-        //         matchedDst: function () {
-        //             return this.countryList.filter(function (val) {
-        //                 // val[1]に方面コードが入る
-        //                 return val[1] === this.checkedDst;
-        //             }, this)
-        //         },
-        //         matchedCountry: function () {
-        //             return this.list.filter(function (val) {
-        //                 // val[3]に国コードが入る
-        //                 return val[3] === this.checkedCountry;
-        //             }, this)
-        //         }
-        //     },
-        //     watch: {
-        //         checkedDst: function () {
-        //             this.showAllDst = false
-        //             this.showCountry = true
-        //         }
-        //     }
-        // })
     </script>
 </body>
 
