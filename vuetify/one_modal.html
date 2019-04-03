@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+<head>
+  <!-- Vuetify -->
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/babel-polyfill/dist/polyfill.min.js"></script>
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+  <!-- useragent -->
+  <script type="text/javascript" src="../modal/js/ua.js"></script>
+  <style>
+    .bg-map {
+      position: relative;
+    }
+
+    .menu,
+    .dst-list,
+    .v-input__control,
+    .v-input__slot {
+      width: 600px !important;
+      height: 500px !important;
+    }
+
+    .dst-list__radio {
+      position: absolute;
+      justify-content: center;
+    }
+
+    .dst-list__radio-asi {
+      top: 42%;
+      right: 48%;
+      width: 50px;
+    }
+
+    .dst-list__radio-asb {
+      top: 50%;
+      right: 48%;
+      width: 80px;
+    }
+
+    .dst-list__radio-oce {
+      top: 60%;
+      right: 40%;
+      width: 120px;
+    }
+
+    .dst-list__radio-eur {
+      top: 37%;
+      right: 71%;
+      width: 80px;
+    }
+
+    .dst-list__radio-afr {
+      top: 50%;
+      right: 71%;
+      width: 80px;
+    }
+
+    .dst-list__radio-usa {
+      top: 40%;
+      right: 13%;
+      width: 80px;
+    }
+
+    .dst-list__radio-sam {
+      top: 60%;
+      right: 10%;
+      width: 120px;
+    }
+
+    .dst-list__radio-hwi {
+      top: 44%;
+      right: 29%;
+      width: 50px;
+    }
+
+    .dst-list__radio-gas {
+      top: 55%;
+      right: 31%;
+      width: 100px;
+    }
+
+    .dst-list label {
+      font-size: 11px;
+    }
+
+    .v-radio {
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .v-input--selection-controls__input {
+      display: none;
+    }
+
+    .dst-list__input,
+    .country-list {
+      display: none;
+    }
+
+    .application--wrap {
+      justify-content: center;
+      min-height: 50vh;
+    }
+
+    .dst-list__label,
+    .country-list__label {
+      display: block;
+      cursor: pointer;
+    }
+
+    .dst-list__label::before {
+      align-items: center;
+      border-radius: inherit;
+      color: inherit;
+      display: flex;
+      flex: 1 0 auto;
+      justify-content: center;
+      margin: 0 auto;
+      position: relative;
+      transition: .3s cubic-bezier(.25, .8, .5, 1);
+      white-space: nowrap;
+      width: inherit
+    }
+
+    .bg-map {
+      width: 600px;
+      height: 500px;
+      margin: 0 auto;
+      background-image: url(../images/tabikobo_map.png);
+      background-size: cover;
+    }
+
+    .title--main,
+    .breadcrumb {
+      display: none;
+    }
+
+    .title--main:first-child,
+    .breadcrumb:first-of-type {
+      display: block;
+    }
+
+    .breadcrumb>li {
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .breadcrumb>li+li:before {
+      content: '>';
+      margin: 0 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <v-app id="inspire" @click="closeModal()">
+      <div class="bg-map">
+        <v-layout row justify-center>
+          <div class="menu">
+            <v-radio-group v-model="checkedDst" @click="dialog2 = true" class="dst-list">
+              <v-radio label="アジア" value="ASI" class="dst-list__radio dst-list__radio-asi text-center"></v-radio>
+              <v-radio label="アジアビーチ" value="ASB" class="dst-list__radio dst-list__radio-asb"></v-radio>
+              <v-radio label="ハワイ" value="HWI" class="dst-list__radio dst-list__radio-hwi"></v-radio>
+              <v-radio label="グアム・サイパン" value="GAS" class="dst-list__radio dst-list__radio-gas"></v-radio>
+              <v-radio label="ヨーロッパ" value="EUR" class="dst-list__radio dst-list__radio-eur"></v-radio>
+              <v-radio label="南太平洋・オセアニア" value="OCE" class="dst-list__radio dst-list__radio-oce"></v-radio>
+              <v-radio label="アフリカ" value="AFR" class="dst-list__radio dst-list__radio-afr"></v-radio>
+              <v-radio label="アメリカ" value="USA" class="dst-list__radio dst-list__radio-usa"></v-radio>
+              <v-radio label="中南米・カリブ海" value="SAM" class="dst-list__radio dst-list__radio-sam"></v-radio>
+            </v-radio-group>
+          </div>
+          <v-dialog v-model="dialog2" max-width="500px">
+            <v-card>
+              <v-card-title v-for="(item, index) in matchedDst" :key="item.id"
+                class="title grey lighten-2 font-weight-bold title--main" primary-title>
+                {{ item[0] }}
+              </v-card-title>
+              <ul v-for="(item, index) in matchedDst" :key="item.id" class="breadcrumb py-2 px-3">
+                <li @click="dialog2=false" class="blue--text text--darken-1">地図へ戻る</li>
+                <li @click="dialog2=false;">{{ item[0] }}</li>
+              </ul>
+              <v-list>
+                <v-list-tile v-for="(item, index) in matchedDst" :key="item.id" @click="">
+                  <input type="radio" v-bind:id="'dst' + item[3]" v-bind:value="item[1] + '-' + item[3]"
+                    v-model="checkedCountry" class="country-list" @click="dialog3 = !dialog3"></input>
+                  <v-list-tile-title><label v-bind:for="'dst' + item[3]"
+                      class="country-list__label">{{ item[2] }}</label></v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+              <v-card-actions>
+                <v-btn color="primary" flat @click="dialog2=false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialog3" max-width="500px">
+            <v-card>
+              <v-card-title v-for="(item, index) in matchedCountry" :key="item.id"
+                class="title grey lighten-2 font-weight-bold title--main" primary-title>
+                {{ item[2] }}
+              </v-card-title>
+              <ul v-for="(item, index) in matchedCountry" :key="item.id" class="breadcrumb py-2 px-3">
+                <li @click="dialog2=false, dialog3=false;" class="blue--text text--darken-1">地図へ戻る</li>
+                <li @click="dialog3=false;" class="blue--text text--darken-1">{{ item[0] }}</li>
+                <li>{{ item[2] }}</li>
+              </ul>
+              <v-list>
+                <v-list-tile v-for="(item, index) in matchedCountry" :key="item.id" @click="">
+                  <a v-bind:href="url + item[1] + '/' + item[3] + '/' + item[5] + '/'">{{ item[4] }}</a>
+                </v-list-tile>
+              </v-list>
+              <v-card-actions>
+                <v-btn color="primary" flat @click="dialog3=false;">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-layout>
+      </div>
+      <v-treeview :items="items"></v-treeview>
+      <ul v-for="(item, index) in items">
+        <li>{{ item[0] }}</li>
+      </ul>
+    </v-app>
+    <pre>{{ $data }}</pre>
+  </div>
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          // data制御
+          dstList: ['ASI', 'ASB'],
+          checkedDst: '',
+          checkedCountry: '',
+          // Vuetify
+          dialog: false,
+          dialog2: false,
+          dialog3: false,
+          showCountry: false,
+          showCity: false,
+          // data
+          list: [],
+          countryList: [],
+          url: '',
+          countryTree: [],
+          cityTree: [],
+          items: [
+            {
+              id: 1,
+              name: 'Applications :',
+              children: [
+                { id: 2, name: 'Calendar : app' },
+                { id: 3, name: 'Chrome : app' },
+                { id: 4, name: 'Webstorm : app' }
+              ]
+            },
+            {
+              id: 5,
+              name: 'Documents :',
+              children: [
+                {
+                  id: 6,
+                  name: 'vuetify :',
+                  children: [
+                    {
+                      id: 7,
+                      name: 'src :',
+                      children: [
+                        { id: 8, name: 'index : ts' },
+                        { id: 9, name: 'bootstrap : ts' }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  id: 10,
+                  name: 'material2 :',
+                  children: [
+                    {
+                      id: 11,
+                      name: 'src :',
+                      children: [
+                        { id: 12, name: 'v-btn : ts' },
+                        { id: 13, name: 'v-card : ts' },
+                        { id: 14, name: 'v-window : ts' }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: 15,
+              name: 'Downloads :',
+              children: [
+                { id: 16, name: 'October : pdf' },
+                { id: 17, name: 'November : pdf' },
+                { id: 18, name: 'Tutorial : html' }
+              ]
+            },
+            {
+              id: 19,
+              name: 'Videos :',
+              children: [
+                {
+                  id: 20,
+                  name: 'Tutorials :',
+                  children: [
+                    { id: 21, name: 'Basic layouts : mp4' },
+                    { id: 22, name: 'Advanced techniques : mp4' },
+                    { id: 23, name: 'All about app : dir' }
+                  ]
+                },
+                { id: 24, name: 'Intro : mov' },
+                { id: 25, name: 'Conference introduction : avi' }
+              ]
+            }
+          ]
+        }
+      },
+      created: function () {
+        axios.get('../modal/data/map.csv').then(function (response) {
+          // 取得完了したらlistリストに代入
+          var tmpArray = response.data.split("\n");
+          var csvArray = [];
+          for (var i = 0; i < tmpArray.length; i++) {
+            csvArray[i] = tmpArray[i].split(",");
+          }
+          this.list = csvArray
+        }.bind(this)).catch(function (e) {
+          console.error(e)
+        })
+        axios.get('../modal/data/country.csv').then(function (response) {
+          // 取得完了したらlistリストに代入
+          var country_csv_Array = response.data.split("\n");
+          var country_name_Array = [];
+          for (var i = 0; i < country_csv_Array.length; i++) {
+            country_name_Array[i] = country_csv_Array[i].split(",");
+          }
+          this.countryList = country_name_Array
+
+          var country_tree_Array = {};
+          country_tree_Array.id = country_name_Array.map(function (item, index) {
+            return index
+          })
+          country_tree_Array.name = country_name_Array.map(function (item, index) {
+            return item[0]
+          })
+          this.countryTree = country_tree_Array
+        }.bind(this)).catch(function (e) {
+          console.error(e)
+        })
+
+        if (this.$vuetify.breakpoint.name == 'md' || this.$vuetify.breakpoint.name == 'lg' || this.$vuetify.breakpoint.name == 'xl') {
+          this.url = 'https://tour.his-j.com/ct/search/02A_10/'
+        } else {
+          this.url = 'https://tour.his-j.com/ct/sp/search/02A_10/'
+        }
+      },
+      computed: {
+        matchedDst: function () {
+          return this.countryList.filter(function (val) {
+            // val[1]に方面コードが入る
+            return val[1] === this.checkedDst;
+          }, this)
+        },
+        matchedCountry: function () {
+          return this.list.filter(function (val) {
+            // val[6]マップコード + val[3]国コードの組み合わせ
+            return val[6] + '-' + val[3] === this.checkedCountry;
+          }, this)
+        }
+      },
+      watch: {
+        checkedDst: function () {
+          this.showAllDst = false
+          this.showCountry = true
+        },
+        checkedCountry: function () {
+          this.showCountry = false
+          this.showCity = true
+        }
+      },
+      methods: {
+        closeModal: function () {
+          // defaultの状態に戻したい
+          this.checkedDst = '',
+            this.checkedCountry = '',
+            this.showAllDst = true
+          this.showCountry = false
+          this.showCity = false
+        },
+        closeCountry: function () {
+
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
