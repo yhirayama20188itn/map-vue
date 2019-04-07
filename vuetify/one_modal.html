@@ -245,94 +245,25 @@
           showCountry: false,
           showCity: false,
           // data
+          head: [],
+          body: [],
           list: [],
           countryList: [],
-          url: '',
-          countryTree: [],
-          cityTree: [],
-          items: [
-            {
-              id: 1,
-              name: 'Applications :',
-              children: [
-                { id: 2, name: 'Calendar : app' },
-                { id: 3, name: 'Chrome : app' },
-                { id: 4, name: 'Webstorm : app' }
-              ]
-            },
-            {
-              id: 5,
-              name: 'Documents :',
-              children: [
-                {
-                  id: 6,
-                  name: 'vuetify :',
-                  children: [
-                    {
-                      id: 7,
-                      name: 'src :',
-                      children: [
-                        { id: 8, name: 'index : ts' },
-                        { id: 9, name: 'bootstrap : ts' }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  id: 10,
-                  name: 'material2 :',
-                  children: [
-                    {
-                      id: 11,
-                      name: 'src :',
-                      children: [
-                        { id: 12, name: 'v-btn : ts' },
-                        { id: 13, name: 'v-card : ts' },
-                        { id: 14, name: 'v-window : ts' }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 15,
-              name: 'Downloads :',
-              children: [
-                { id: 16, name: 'October : pdf' },
-                { id: 17, name: 'November : pdf' },
-                { id: 18, name: 'Tutorial : html' }
-              ]
-            },
-            {
-              id: 19,
-              name: 'Videos :',
-              children: [
-                {
-                  id: 20,
-                  name: 'Tutorials :',
-                  children: [
-                    { id: 21, name: 'Basic layouts : mp4' },
-                    { id: 22, name: 'Advanced techniques : mp4' },
-                    { id: 23, name: 'All about app : dir' }
-                  ]
-                },
-                { id: 24, name: 'Intro : mov' },
-                { id: 25, name: 'Conference introduction : avi' }
-              ]
-            }
-          ]
+          url: ''
         }
       },
       created: function () {
         axios.get('../modal/data/map.csv').then(function (response) {
           // 取得完了したらlistリストに代入
           var tmpArray = response.data.split("\n");
-          var csvArray = [];
+          var head = [], body = [];
           for (var i = 0; i < tmpArray.length; i++) {
-            csvArray[i] = tmpArray[i].split(",");
+            body[i] = tmpArray[i].split(",");
           }
-          this.list = csvArray
+          head = body[0];
+          // this.head = head
+          // this.body = body.slice(1)
+          this.list = this.consoleLog('hello');
         }.bind(this)).catch(function (e) {
           console.error(e)
         })
@@ -391,13 +322,22 @@
         closeModal: function () {
           // defaultの状態に戻したい
           this.checkedDst = '',
-            this.checkedCountry = '',
-            this.showAllDst = true
+          this.checkedCountry = '',
+          this.showAllDst = true
           this.showCountry = false
           this.showCity = false
         },
-        closeCountry: function () {
-
+        toJson: function(header, body) {
+          var json = body.map(function (row) {
+            return row.reduce(function (accum, currentValue, i) {
+              accum[header[i]] = currentValue;
+              return accum;
+            }, {});
+          });
+          return JSON.stringify(json);
+        },
+        consoleLog: function(i) {
+          console.log(i);
         }
       }
     })

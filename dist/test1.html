@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+  <title>Jcom map sample</title>
+  <head>
+  <!-- Vuetify -->
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/babel-polyfill/dist/polyfill.min.js"></script>
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+  <!-- useragent -->
+  <script type="text/javascript" src="../modal/js/ua.js"></script>
+  <!-- jquery -->
+  <script type="text/javascript" src="https://www.his-j.com/cmn/plugin/jquery/jquery-3.3.1.min.js"></script>
+
+  <!-- map制御js -->
+  <script src="./js/test1.js"></script>
+  <script src="./js/mapList.js"></script>
+  <link rel="stylesheet" href="./css/main.css">
+  </head>
+  <body>
+    <div id="app">
+      <div class="bg-map">
+        <v-layout row justify-center>
+          <v-radio-group v-model="checkedDst" @click="modal1 = true" class="dst-list">
+            <v-radio label="アジア" value="ASI" class="dst-list__radio dst-list__radio-asi text-center"></v-radio>
+            <!-- <v-radio label="アジアビーチ" value="ASB" class="dst-list__radio dst-list__radio-asb"></v-radio>
+            <v-radio label="ハワイ" value="HWI" class="dst-list__radio dst-list__radio-hwi"></v-radio>
+            <v-radio label="グアム・サイパン" value="GAS" class="dst-list__radio dst-list__radio-gas"></v-radio> -->
+            <v-radio label="ヨーロッパ" value="EUR" class="dst-list__radio dst-list__radio-eur"></v-radio>
+            <v-radio label="オセアニア・南太平洋・インド洋" value="OCE" class="dst-list__radio dst-list__radio-oce"></v-radio>
+            <v-radio label="中近東・アフリカ" value="AFR" class="dst-list__radio dst-list__radio-afr"></v-radio>
+            <v-radio label="アメリカ" value="USA" class="dst-list__radio dst-list__radio-usa"></v-radio>
+            <v-radio label="カリブ海・中南米" value="SAM" class="dst-list__radio dst-list__radio-sam"></v-radio>
+          </v-radio-group>
+          <v-dialog v-model="modal1" max-width="500px">
+            <v-card>
+              <!-- <v-card-title v-for="(item, index) in matchedDst" :key="item.id"
+                class="title grey lighten-2 font-weight-bold title--main" primary-title>
+                {{ item[0] }}
+              </v-card-title>
+              <ul v-for="(item, index) in matchedDst" :key="item.id" class="breadcrumb py-2 px-3">
+                <li @click="dialog2=false" class="blue--text text--darken-1">地図へ戻る</li>
+                <li @click="dialog2=false;">{{ item[0] }}</li>
+              </ul> -->
+              <v-list>
+                <v-list-tile v-for="(item, index) in matchedDst_returnCountry" :key="item.id">
+                  <input type="radio" v-bind:id="'dst' + item['city_code']" v-bind:value="item['city_code']" v-model="checkedCity"
+                    class="country-list"></input>
+                  <v-list-tile-title>
+                    <label v-bind:for="'dst' + item['country_code']" class="country-list__label">{{ item['country_name'] }}</label>
+                  </v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+
+              <v-list>
+                <v-list-tile v-for="(item, index) in matchedDst_returnCountry" :key="item.id">
+                  <input type="radio" v-bind:id="'dst' + item['city_code']" v-bind:value="item['city_code']" v-model="checkedCountry"
+                    class="country-list"></input>
+                  <v-list-tile-title>
+                    <label v-bind:for="'dst' + item['city_code']" class="country-list__label">{{ item['country_name'] }}</label>
+                  </v-list-tile-title>
+                </v-list-tile>
+                <city-list
+                      v-for="city in cityResult"
+                      v-bind:key="city.id"
+                      v-bind:city="city"
+                    ></city-list>
+              </v-list>
+              <v-card-actions>
+                <v-btn color="primary" flat @click="modal1=false; closeModal()">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-layout>
+      </div>
+      <div v-for="(item, index) in matchedDst_returnCountry" :key="item.id" v-bind:id="item['country_code']" class="city-parent">
+        <input type="radio" v-bind:id="'dst' + item['country_code']" v-bind:value="item['country_code']"
+                    v-model="checkedCountry" class="country-list"></input>
+        <label v-bind:for="'dst' + item['country_code']"
+                      class="country-list__label" @click="showCityList">{{ item['country_name'] }}</label>
+        <city-list
+          v-for="city in cityResult"
+          v-bind:key="city.id"
+          v-bind:city="city"
+        ></city-list>
+      </div>
+      <div v-for="(item, index) in matchedCountry_returnCity" :key="item.id">
+        <input type="radio" v-bind:id="'dst' + item['city_code']" v-bind:value="item['city_code']"
+                    v-model="checkedCity" class="country-list"></input>
+        <label v-bind:for="'dst' + item['city_code']"
+                      class="country-list__label">{{ item }}</label>
+      </div>
+      <pre>{{ $data }}</pre>
+    </div>
+  </body>
+</html>

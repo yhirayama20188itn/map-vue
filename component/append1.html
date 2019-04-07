@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <meta charset="utf_8">
+  <head>
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+      #app{
+        margin:1em;
+        padding:1em;
+        border:1px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>App</h1>
+      <input type="text" v-model="message">
+      <ul>
+        <li v-for="item in list">{{item}}</li>
+      </ul>
+      <to-body>
+        <div>
+          <h1>to body</h1>
+          <p>{{ message }}</p>
+          <button @click="list.push('hello!')">
+            Hello!
+          </button>
+        </div>
+      </to-body>
+    </div>
+
+    <script>
+      Vue.component('to-body', {
+        beforeCreate() {
+          this._el = document.body.appendChild(document.createElement("div"));
+          this._vm = new Vue({
+            methods: {
+              forseRender(slots) {
+                this._slots = slots;
+                this.$forceUpdate();
+              }
+            },
+            render(createElement) {
+              if (this._slots) {
+                return createElement('div', this._slots);
+              }
+
+            }
+          }).$mount(this._el);
+        },
+        render(createElement) {
+
+          this._vm.forseRender(this.$slots.default);
+        }
+      });
+
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            message: 'Hello Vue.js!',
+            list: []
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

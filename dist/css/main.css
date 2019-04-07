@@ -1,0 +1,168 @@
+    .bg-map {
+      position: relative;
+    }
+
+    .menu,
+    .dst-list,
+    .v-input__control,
+    .v-input__slot {
+      width: 600px !important;
+      height: 500px !important;
+    }
+
+    .dst-list__radio {
+      position: absolute;
+      justify-content: center;
+    }
+
+    .dst-list__radio-asi {
+      top: 42%;
+      right: 48%;
+      width: 50px;
+    }
+
+    .dst-list__radio-asb {
+      top: 50%;
+      right: 48%;
+      width: 80px;
+    }
+
+    .dst-list__radio-oce {
+      top: 60%;
+      right: 40%;
+      width: 120px;
+    }
+
+    .dst-list__radio-eur {
+      top: 37%;
+      right: 71%;
+      width: 80px;
+    }
+
+    .dst-list__radio-afr {
+      top: 50%;
+      right: 71%;
+      width: 80px;
+    }
+
+    .dst-list__radio-usa {
+      top: 40%;
+      right: 13%;
+      width: 80px;
+    }
+
+    .dst-list__radio-sam {
+      top: 60%;
+      right: 10%;
+      width: 120px;
+    }
+
+    .dst-list__radio-hwi {
+      top: 44%;
+      right: 29%;
+      width: 50px;
+    }
+
+    .dst-list__radio-gas {
+      top: 55%;
+      right: 31%;
+      width: 100px;
+    }
+
+    .dst-list label {
+      font-size: 11px;
+    }
+
+    .v-radio {
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .v-radio > label {
+      display: flex;
+      justify-content: center;
+    }
+
+    .v-input--selection-controls__input {
+      display: none;
+    }
+
+    .dst-list__input,
+    .country-list {
+      display: none;
+    }
+
+    .application--wrap {
+      justify-content: center;
+      min-height: 50vh;
+    }
+
+    .dst-list__label,
+    .country-list__label {
+      display: block;
+      cursor: pointer;
+    }
+
+    .dst-list__label::before {
+      align-items: center;
+      border-radius: inherit;
+      color: inherit;
+      display: flex;
+      flex: 1 0 auto;
+      justify-content: center;
+      margin: 0 auto;
+      position: relative;
+      transition: .3s cubic-bezier(.25, .8, .5, 1);
+      white-space: nowrap;
+      width: inherit
+    }
+
+    .bg-map {
+      width: 600px;
+      height: 500px;
+      margin: 0 auto;
+      background-image: url(../img/tabikobo_map.png);
+      background-size: cover;
+    }
+
+    .title--main,
+    .breadcrumb {
+      display: none;
+    }
+
+    .title--main:first-child,
+    .breadcrumb:first-of-type {
+      display: block;
+    }
+
+    .breadcrumb>li {
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .breadcrumb>li+li:before {
+      content: '>';
+      margin: 0 10px;
+    }
+
+    .city-parent {
+    font-size: 16px;
+    font-weight: 400;
+    height: auto;
+    margin: 0;
+  }
+  .city-parent > label {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+  }
+  .city-parent > label:hover {
+    background: rgba(0,0,0,.04)
+  }
+  .city-parent > label, .city-parent > .city-list {
+    height: 48px;
+  }
+  .city-parent ul {
+    cursor: pointer;
+    padding: 0 0 0 3rem;
+  }
